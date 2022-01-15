@@ -28,6 +28,48 @@
 
 <div id="chart_div"></div>
 <div id="new"></div>
-
+<div id="rsrq"></div>
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row" >Device name:</th>
+      <td id="device"></td>
+    </tr>
+    <tr>
+      <th scope="row">Serial number:</th>
+      <td id="serial"></td>
+    </tr>
+    <tr>
+      <th scope="row" >Imei:</th>
+      <td colspan="2" id="imei"></td>
+    </tr>
+    <tr>
+      <th scope="row" >Mac:</th>
+      <td colspan="2" id="mac"></td>
+    </tr>
+    <tr>
+      <th scope="row" >Ip:</th>
+      <td colspan="2" id="ip"></td>
+    </tr>
+    <tr>
+      <th scope="row" >DNS:</th>
+      <td colspan="2" id="dns"></td>
+    </tr>
+    <tr>
+      <th scope="row" >Mode:</th>
+      <td colspan="2" id="mode"></td>
+    </tr>
+  </tbody>
+</table>
+<script>
+  const info=require('./graph.js')
+  document.getElementById("device").innerHTML = info.nome;
+  document.getElementById("imei").innerHTML = info.imei;
+  document.getElementById("ip").innerHTML = info.ip;
+  document.getElementById("dns").innerHTML = info.dns;
+  document.getElementById("mode").innerHTML = info.mode;
+  document.getElementById("mac").innerHTML = info.mac;
+  document.getElementById("serial").innerHTML = info.serial;
+  </script>
 </body>
 <html> 
