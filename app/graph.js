@@ -1,5 +1,44 @@
 const fs=require('fs')
 const path=require('path')
+const huaweiLteApi = require('huawei-lte-api');
+
+const connection = new huaweiLteApi.Connection('http://admin:pass192.168.100.1/');
+
+
+connection.ready.then(function() {
+    console.log('Ready');
+
+
+
+
+    device.information().then(function(result) {
+        var name=result.DeviceName
+        exports.nome=name
+
+         var imei=result.Imei
+         exports.imei=imei
+
+         var ip=result.WanIPAddress
+         exports.ip=ip
+
+         var dns=result.wan_dns_address
+         exports.dns=dns
+
+        var mode=result.workmode
+        exports.mode=mode
+
+       var serial=result.SerialNumber
+       exports.serial=serial
+
+        var mac=result.MacAddress1
+        exports.mac=mac
+        
+    }).catch(function(error) {
+        console.log(error);
+    });
+
+});
+
 var dati=[]
  function readFilesSync(dir) {
     const files = [];
@@ -23,32 +62,40 @@ var dati=[]
     return files;
 }
 var row=[]
-
+var row2=[]
+var row3=[]
+var newrow=[]
+var i=0
 function leggere(){
-var files = readFilesSync('../plotdata');
+  connection.ready.then(function() {
+    console.log('Ready');
 
-  for(var i=0; i<files.length; i++){
-    var nome= files[i]['name']+files[i]['ext']
 
-    try {
-        const data = fs.readFileSync('../plotdata/' + nome, 'utf8')
-        console.log(data)
-        dato=JSON.parse(data)
-        var temp=[parseInt(files[i]['name']), parseInt(dato.sinr)]
-        row.push(temp)
-    } catch (err) {
-        console.error(err)
-    }
-}}
+    const device = new huaweiLteApi.Device(connection);
+    device.signal().then(function(result) {
+      row.push([i, parseInt(result.sinr)])
+      row2.push([i, parseInt(result.rsrp)])
+      row2.push([i, parseInt(result.rsrq)])
+      i++
+    }).catch(function(error) {
+        console.log(error);
+    });
+
+
+});
+  
+}
 
 leggere()
-function grafico(){
+
 google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(sinr);
-}
-grafico()
+google.charts.setOnLoadCallback(ciao);
+google.charts.setOnLoadCallback(rsrq);
+
+///sinr
 function sinr() {
-      console.log("ciao")
+      console.log("ciao sinr")
       var data = new google.visualization.DataTable();
       data.addColumn('number', 'dB');
       data.addColumn('number', 'SINR');
@@ -73,51 +120,54 @@ function sinr() {
 
 
 
-///secondo grafico
-var newrow=[]
-function leggere(){
-  var files = readFilesSync('../plotdata');
+///rsrp
+
   
-    for(var i=0; i<files.length; i++){
-      var nome= files[i]['name']+files[i]['ext']
-  
-      try {
-          const data = fs.readFileSync('../plotdata/' + nome, 'utf8')
-          console.log(data)
-          dato=JSON.parse(data)
-          var temp=[parseInt(files[i]['name']), parseInt(dato.rsrp)]
-          newrow.push(temp)
-      } catch (err) {
-          console.error(err)
-      }
-  }}
-  
-  leggere()
-  function grafic(){
-  google.charts.load('current', {packages: ['corechart', 'line']});
-  google.charts.setOnLoadCallback(ciao);
-  }
-  grafic()
   function ciao() {
         console.log("ciao")
         var data = new google.visualization.DataTable();
         data.addColumn('number', 'dB');
-        data.addColumn('number', 'SINR');
+        data.addColumn('number', 'RSRP');
   
-        data.addRows(newrow);
+        data.addRows(row2);
   
         var options = {
           hAxis: {
             title: 'Seconds'
           },
           vAxis: {
-            title: 'SINR'
+            title: 'RSRP'
           }
         };
   
         var chart = new google.visualization.LineChart(document.getElementById('new'));
   
         chart.draw(data, options);
-        lettura();
         setTimeout(ciao,1000)
       }
+
+///rsrq
+
+function rsrq() {
+  console.log("ciao")
+  var data = new google.visualization.DataTable();
+  data.addColumn('number', 'dB');
+  data.addColumn('number', 'RSRQ');
+
+  data.addRows(row2);
+
+  var options = {
+    hAxis: {
+      title: 'Seconds'
+    },
+    vAxis: {
+      title: 'RSRQ'
+    }
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('rsrq'));
+
+  chart.draw(data, options);
+  setTimeout(ciao,1000)
+}
+
