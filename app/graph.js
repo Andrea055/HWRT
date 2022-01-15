@@ -23,11 +23,9 @@ var dati=[]
     return files;
 }
 var row=[]
+
 function leggere(){
 var files = readFilesSync('../plotdata');
-
-
-
 
   for(var i=0; i<files.length; i++){
     var nome= files[i]['name']+files[i]['ext']
@@ -44,8 +42,10 @@ var files = readFilesSync('../plotdata');
 }}
 
 leggere()
-function grafico(){google.charts.load('current', {packages: ['corechart', 'line']});
-google.charts.setOnLoadCallback(sinr);}
+function grafico(){
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(sinr);
+}
 grafico()
 function sinr() {
       console.log("ciao")
@@ -70,3 +70,54 @@ function sinr() {
       leggere();
       setTimeout(sinr,1000)
     }
+
+
+
+///secondo grafico
+var newrow=[]
+function leggere(){
+  var files = readFilesSync('../plotdata');
+  
+    for(var i=0; i<files.length; i++){
+      var nome= files[i]['name']+files[i]['ext']
+  
+      try {
+          const data = fs.readFileSync('../plotdata/' + nome, 'utf8')
+          console.log(data)
+          dato=JSON.parse(data)
+          var temp=[parseInt(files[i]['name']), parseInt(dato.rsrp)]
+          newrow.push(temp)
+      } catch (err) {
+          console.error(err)
+      }
+  }}
+  
+  leggere()
+  function grafic(){
+  google.charts.load('current', {packages: ['corechart', 'line']});
+  google.charts.setOnLoadCallback(ciao);
+  }
+  grafic()
+  function ciao() {
+        console.log("ciao")
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'dB');
+        data.addColumn('number', 'SINR');
+  
+        data.addRows(newrow);
+  
+        var options = {
+          hAxis: {
+            title: 'Seconds'
+          },
+          vAxis: {
+            title: 'SINR'
+          }
+        };
+  
+        var chart = new google.visualization.LineChart(document.getElementById('new'));
+  
+        chart.draw(data, options);
+        lettura();
+        setTimeout(ciao,1000)
+      }
