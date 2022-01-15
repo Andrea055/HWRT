@@ -29,3 +29,8 @@ Not yet.
 - Better UI(medium priority)
 - Add theme(low priority)
 
+## Library used for this app
+
+
+- Nw.js(https://github.com/nwjs/nw.js)
+- Huawei LTE API(https://github.com/Salamek/huawei-lte-api-ts), thanks to  Salamek for this fantastic library
