@@ -65,8 +65,8 @@ var dati=[]
 var row=[]
 var row2=[]
 var row3=[]
-var data=[]
-var download=[]
+var upload=[]
+var downloadg=[]
 var i=0
 function leggere(){
   connection.ready.then(function() {
@@ -93,12 +93,12 @@ connection.ready.then(function() {
 
 
   var device = new huaweiLteApi.Monitoring(connection);
-  device.trafficStatistics.then(function(result) {
-    data.push([i,parseInt(result.CurrentUpload)/1000000])
-    download.push([i, parseInt(result.Download)/1000000])
+  device.trafficStatistics().then(function(result) {
+    upload.push([i,parseInt(result.CurrentUploadRate)/100000])
+    downloadg.push([i, parseInt(result.CurrentDownloadRate)/100000])
     if(i>10){
-      data.slice(1)
-      download.slice(1)
+      upload.slice(1)
+      downloadg.slice(1)
 
     }
   }).catch(function(error) {
@@ -117,6 +117,7 @@ google.charts.setOnLoadCallback(sinr);
 google.charts.setOnLoadCallback(ciao);
 google.charts.setOnLoadCallback(rsrq);
 google.charts.setOnLoadCallback(datausage);
+google.charts.setOnLoadCallback(downloadgra);
 ///sinr
 function sinr() {
     
@@ -197,12 +198,11 @@ function rsrq() {
 ///data usage
 
 function datausage() {
-  console.log("ciao")
   var data = new google.visualization.DataTable();
   data.addColumn('number', 'Mbps');
   data.addColumn('number', 'Upload rate');
 
-  data.addRows(data,download);
+  data.addRows(upload);
 
   var options = {
     hAxis: {
@@ -217,4 +217,26 @@ function datausage() {
 
   chart.draw(data, options);
   setTimeout(datausage,1000)
+}
+
+function downloadgra() {
+  var data = new google.visualization.DataTable();
+  data.addColumn('number', 'Mbps');
+  data.addColumn('number', 'Download rate');
+
+  data.addRows(downloadg);
+
+  var options = {
+    hAxis: {
+      title: 'Seconds'
+    },
+    vAxis: {
+      title: 'Download Mbps'
+    }
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('downloadgraph'));
+
+  chart.draw(data, options);
+  setTimeout(downloadgra,1000)
 }
