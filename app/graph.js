@@ -2,7 +2,6 @@ const fs=require('fs')
 const path=require('path')
 const huaweiLteApi = require('huawei-lte-api');
 const connection = new huaweiLteApi.Connection('http://admin:Af4339XcbrSn@192.168.100.1/');
-document.getElementById('huno')="ciao"
 
 connection.ready.then(function() {
     
@@ -84,12 +83,9 @@ function leggere(){
         var scritto=result.enodeb_id
       }
       var info=[result.plmn,scritto]
-      fs.writeFile('bts.json', JSON.stringify(enode), function (err) {
-        if (err) return console.log(err);
-      });
-      }).catch(function(error) {
-          alert("Incorrectible error:" + error);
-      });
+    fs.writeFile('bts.json', JSON.stringify(info), function (err) {
+      if (err) return console.log(err);
+    });
       i++
       if(i>10){
         row.slice(1)
@@ -99,7 +95,6 @@ function leggere(){
     }).catch(function(error) {
         console.log(error);
     });
-
 
 });
 connection.ready.then(function() {
