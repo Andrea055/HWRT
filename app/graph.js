@@ -6,7 +6,7 @@ const connection = new huaweiLteApi.Connection('http://admin:Af4339XcbrSn@192.16
 
 
 connection.ready.then(function() {
-
+    
     const device = new huaweiLteApi.Device(connection);
     device.information().then(function(result) {
         var nome=result.DeviceName
@@ -65,12 +65,14 @@ var dati=[]
 var row=[]
 var row2=[]
 var row3=[]
+var data=[]
+var download=[]
 var i=0
 function leggere(){
   connection.ready.then(function() {
 
 
-    const device = new huaweiLteApi.Device(connection);
+    var device = new huaweiLteApi.Device(connection);
     device.signal().then(function(result) {
       row.push([i, parseInt(result.sinr)])
       row2.push([i, parseInt(result.rsrp)])
@@ -80,7 +82,6 @@ function leggere(){
         row.slice(1)
         row2.slice(1)
         row3.slice(1)
-        console.log("fatto")
       }
     }).catch(function(error) {
         console.log(error);
@@ -88,7 +89,25 @@ function leggere(){
 
 
 });
-  
+connection.ready.then(function() {
+
+
+  var device = new huaweiLteApi.Monitoring(connection);
+  device.trafficStatistics.then(function(result) {
+    data.push([i,parseInt(result.CurrentUpload)/1000000])
+    download.push([i, parseInt(result.Download)/1000000])
+    if(i>10){
+      data.slice(1)
+      download.slice(1)
+
+    }
+  }).catch(function(error) {
+      console.log(error);
+  });
+
+
+});
+
 }
 
 leggere()
@@ -97,7 +116,7 @@ google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(sinr);
 google.charts.setOnLoadCallback(ciao);
 google.charts.setOnLoadCallback(rsrq);
-
+google.charts.setOnLoadCallback(datausage);
 ///sinr
 function sinr() {
     
@@ -173,4 +192,29 @@ function rsrq() {
 
   chart.draw(data, options);
   setTimeout(rsrq,1000)
+}
+
+///data usage
+
+function datausage() {
+  console.log("ciao")
+  var data = new google.visualization.DataTable();
+  data.addColumn('number', 'Mbps');
+  data.addColumn('number', 'Upload rate');
+
+  data.addRows(data,download);
+
+  var options = {
+    hAxis: {
+      title: 'Seconds'
+    },
+    vAxis: {
+      title: 'Upload Mbps'
+    }
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('data'));
+
+  chart.draw(data, options);
+  setTimeout(datausage,1000)
 }
