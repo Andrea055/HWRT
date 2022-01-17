@@ -13,7 +13,7 @@ HWRT is an application wrote with nw.js to control and check the parameters of H
 - Statistic of SINR,RSRP,RSRQ
 - Band selection(work but only one band work)
 - Write SMS(not yet)
-- View the details of your BTS(only in some country, not yet)
+- View the details of your BTS(only in some country)
 
 
 ## Installation
@@ -25,7 +25,7 @@ Not yet.
 
 - Band selection(Work with only one band)
 - Write SMS(low priority)
-- Search BTS(medium priority)
+- Search BTS(work,need test for other country othervise italy)
 - Better UI(medium priority)
 - Add theme(low priority)
 
