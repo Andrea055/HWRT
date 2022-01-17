@@ -1,7 +1,32 @@
 const fs=require('fs')
 const path=require('path')
 const huaweiLteApi = require('huawei-lte-api');
-const connection = new huaweiLteApi.Connection('http://admin:Af4339XcbrSn@192.168.100.1/');
+
+
+
+try {
+  if (!fs.existsSync('credentials.json')) {
+    var user=prompt("Hey there! Thank you for downloading HWRT, please enter your user")
+    var pass=prompt("Please insert password:")
+    var ip=prompt("Enter the ip of your huawei router")
+    var credentials={user:user,pass:pass,ip:ip}
+    fs.writeFile('credentials.json', JSON.stringify(credentials), function (err) {
+      if (err) return console.log(err);
+    });
+  }else{
+    fs.readFile('credentials.json', 'utf8' , (err, data) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      var credentials=JSON.parse(data)
+    })
+  }
+} catch(err) {
+  console.error(err)
+}
+
+const connection = new huaweiLteApi.Connection('http://' + credentials.user + "@" + credentials.pass + credentials.ip);
 
 connection.ready.then(function() {
     
@@ -26,7 +51,16 @@ connection.ready.then(function() {
 
 
         var mac=result.MacAddress1
-      var all=[nome,imei,ip,dns,mode,serial,mac]
+        var band=result.mode
+        var bandwidth=result.dlbandwidth + "/" + result.ulbandwidth
+        var plmn=result.plmn
+        switch(plmn){
+          case "22288":
+            var plmn="WindTre"
+          default:
+            break;
+        }
+      var all=[nome,imei,ip,dns,mode,serial,mac,band,bandwidth,plmn,result.pci,result.cell_id,result.mcs,result.arfcn,result.enodeb_id,result.transmode,result.tac]
 
     fs.writeFile('info.json', JSON.stringify(all), function (err) {
       if (err) return console.log(err);
@@ -35,30 +69,6 @@ connection.ready.then(function() {
     }).catch(function(error) {
         alert("Incorrectible error:" + error);
     });
-
-});
-connection.ready.then(function() {
-    
-  const device = new huaweiLteApi.Device(connection);
-  device.signal().then(function(result) {
-    var band=result.mode
-    var bandwidth=result.dlbandwidth + "/" + result.ulbandwidth
-    var plmn=result.plmn
-    switch(plmn){
-      case "22288":
-        var plmn=result.plmn+ "WindTre"
-      default:
-        break;
-    }
-    var all=[result.mode,bandwidth, result.plmn,result.band,result.enodeb_id,result.dl_mcs,result.transmode,result.tac,result.arfcn,result.cell_id,result.pci]
-
-  fs.writeFile('band.json', JSON.stringify(all), function (err) {
-    if (err) return console.log(err);
-    console.log('Hello World > helloworld.txt');
-  });
-  }).catch(function(error) {
-      alert("Incorrectible error:" + error);
-  });
 
 });
 
