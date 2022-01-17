@@ -7,6 +7,8 @@ fs.readFile('bts.json', 'utf8' , (err, data) => {
     case "italy.html":
         document.getElementById('bts').src="https://lteitaly.it/internal/map.php#bts=" + JSON.parse(data)[0] + "." + JSON.parse(data)[1]
     break;
+    default:
+        document.getElementById('bts').src="https://ltemap.eu/internal/map.php#bts=" + JSON.parse(data)[0] + "." + JSON.parse(data)[1]
     }
 
   if (err) {
