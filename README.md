@@ -14,6 +14,7 @@ HWRT is an application wrote with nw.js to control and check the parameters of H
 - Band selection(work but only one band work)
 - Write SMS(not yet)
 - View the details of your BTS(only in some country)
+- Diagnose your connection with ping and traceroute
 
 
 ## Installation
