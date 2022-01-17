@@ -62,7 +62,7 @@
 <label for="vehicle3">4G</label><br> 
 <h6>&nbsp;</h6>
 <button type="button" id="setup" class="btn btn-primary" onclick="set()">Set this option</button>
-<h6>&nbsp;</h6>
+
 <table class="table">
   <tbody>
     <tr>
@@ -108,28 +108,18 @@
   </tbody>
 </table>
 <script>
-  const fs=require('fs')
-  fs.readFile('band.json', 'utf8' , (err, data) => {
+  fs.readFile('credentials.json', 'utf8' , (err, data) => {
   if (err) {
     console.error(err)
     return
   }
-  document.getElementById("band").innerHTML = JSON.parse(data)[0];
-  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[1];
-  document.getElementById("plmn").innerHTML = JSON.parse(data)[2];
-  document.getElementById("enode").innerHTML = JSON.parse(data)[4];
-  document.getElementById("mcs").innerHTML = JSON.parse(data)[5];
-  document.getElementById("tra").innerHTML = JSON.parse(data)[6];
-  document.getElementById("tac").innerHTML = JSON.parse(data)[7];
-  document.getElementById("arfcn").innerHTML = JSON.parse(data)[8];
-  document.getElementById("cellid").innerHTML = JSON.parse(data)[9];
-  document.getElementById("pci").innerHTML = JSON.parse(data)[10];
+  var credentials=JSON.parse(data)
 })
 function set(){
 
 const huaweiLteApi = require('huawei-lte-api');
 var exp=0
-const connection = new huaweiLteApi.Connection('http://admin:PASS@192.168.100.1/');
+const connection = new huaweiLteApi.Connection('http://' + credentials.user + "@" + credentials.pass + credentials.ip);
 var band=0
 if(document.getElementById("b1").checked==true){
   exp=document.getElementById("b1").value
@@ -179,7 +169,32 @@ connection.ready.then(function() {
 
 
 });
+connection.ready.then(function() {
+    
+    const device = new huaweiLteApi.Device(connection);
+    device.information().then(function(result) {
+        var plmn=result.plmn
+        switch(plmn){
+          case "22288":
+            var plmn="WindTre"
+          default:
+            break;
+        }
+        document.getElementById("band").innerHTML = result.band;
+        document.getElementById("bandwidth").innerHTML = result.ulbandwidth + "/" + result.dlbandwidth;
+        document.getElementById("plmn").innerHTML = result.plmn;
+        document.getElementById("arfcn").innerHTML = result.arfcn;
+        document.getElementById("cellid").innerHTML = result.cell_id;
+        document.getElementById("pci").innerHTML = result.pci;
+        document.getElementById("enode").innerHTML = result.enodeb_id;
+        document.getElementById("mcs").innerHTML = result.mcs;
+        document.getElementById("tra").innerHTML = result.transmode;
+        document.getElementById("tac").innerHTML = result.tac;
+    }).catch(function(error) {
+        alert("Incorrectible error:" + error);
+    });
 
+});
 }
 
   </script>
