@@ -96,10 +96,11 @@
     </tr>
   </tbody>
 </table>
+
 <script>
 const fs = require('fs')
-
-fs.readFile('info.json', 'utf8' , (err, data) => {
+function refres(){
+  fs.readFile('info.json', 'utf8' , (err, data) => {
   if (err) {
     console.error(err)
     return
@@ -116,6 +117,9 @@ fs.readFile('info.json', 'utf8' , (err, data) => {
   document.getElementById("plmn").innerHTML = JSON.parse(data)[9];
   document.getElementById("enode").innerHTML = JSON.parse(data)[10];
 })
+    setTimeout(refres,3000)
+}
+    refres();
   </script>
 </body>
 <html> 
