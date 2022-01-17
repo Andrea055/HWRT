@@ -20,7 +20,7 @@
             <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="bandselection.html">Band selection</a>
+            <a class="nav-link" href="../bandselection.html">Band selection</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -60,7 +60,15 @@
     </tr>
     <tr>
       <th scope="row" >MCS:</th>
-      <td colspan="2" id="arfcn"></td>
+      <td colspan="2" id="mcs"></td>
+    </tr>
+    <tr>
+      <th scope="row" >Transmod:</th>
+      <td colspan="2" id="tra"></td>
+    </tr>
+    <tr>
+      <th scope="row" >TAC:</th>
+      <td colspan="2" id="tac"></td>
     </tr>
     <tr>
       <th scope="row" >Bandwidth:</th>
@@ -82,23 +90,21 @@
 </table>
 </body>
 <script>
-  const fs = require('fs')
-
-fs.readFile('info.json', 'utf8' , (err, data) => {
+  fs.readFile('band.json', 'utf8' , (err, data) => {
   if (err) {
     console.error(err)
     return
   }
-  document.getElementById("band").innerHTML = JSON.parse(data)[7];
-  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[8];
-  document.getElementById("plmn").innerHTML = JSON.parse(data)[9];
-  document.getElementById("arfcn").innerHTML = JSON.parse(data)[13];
-  document.getElementById("cellid").innerHTML = JSON.parse(data)[11];
+  document.getElementById("band").innerHTML = JSON.parse(data)[0];
+  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[1];
+  document.getElementById("plmn").innerHTML = JSON.parse(data)[2];
+  document.getElementById("enode").innerHTML = JSON.parse(data)[4];
+  document.getElementById("mcs").innerHTML = JSON.parse(data)[5];
+  document.getElementById("tra").innerHTML = JSON.parse(data)[6];
+  document.getElementById("tac").innerHTML = JSON.parse(data)[7];
+  document.getElementById("arfcn").innerHTML = JSON.parse(data)[8];
+  document.getElementById("cellid").innerHTML = JSON.parse(data)[9];
   document.getElementById("pci").innerHTML = JSON.parse(data)[10];
-  document.getElementById("enode").innerHTML = JSON.parse(data)[14];
-  document.getElementById("mcs").innerHTML = JSON.parse(data)[12];
-  document.getElementById("tra").innerHTML = JSON.parse(data)[15];
-  document.getElementById("tac").innerHTML = JSON.parse(data)[16];
 })
 </script>
 <html> 
