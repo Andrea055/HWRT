@@ -26,16 +26,7 @@ connection.ready.then(function() {
 
 
         var mac=result.MacAddress1
-        var band=result.mode
-        var bandwidth=result.dlbandwidth + "/" + result.ulbandwidth
-        var plmn=result.plmn
-        switch(plmn){
-          case "22288":
-            var plmn="WindTre"
-          default:
-            break;
-        }
-      var all=[nome,imei,ip,dns,mode,serial,mac,band,bandwidth,plmn,result.pci,result.cell_id,result.mcs,result.arfcn,result.enodeb_id,result.transmode,result.tac]
+      var all=[nome,imei,ip,dns,mode,serial,mac]
 
     fs.writeFile('info.json', JSON.stringify(all), function (err) {
       if (err) return console.log(err);
@@ -44,6 +35,30 @@ connection.ready.then(function() {
     }).catch(function(error) {
         alert("Incorrectible error:" + error);
     });
+
+});
+connection.ready.then(function() {
+    
+  const device = new huaweiLteApi.Device(connection);
+  device.signal().then(function(result) {
+    var band=result.mode
+    var bandwidth=result.dlbandwidth + "/" + result.ulbandwidth
+    var plmn=result.plmn
+    switch(plmn){
+      case "22288":
+        var plmn=result.plmn+ "WindTre"
+      default:
+        break;
+    }
+    var all=[result.mode,bandwidth, result.plmn,result.band,result.enodeb_id,result.dl_mcs,result.transmode,result.tac,result.arfcn,result.cell_id,result.pci]
+
+  fs.writeFile('band.json', JSON.stringify(all), function (err) {
+    if (err) return console.log(err);
+    console.log('Hello World > helloworld.txt');
+  });
+  }).catch(function(error) {
+      alert("Incorrectible error:" + error);
+  });
 
 });
 
