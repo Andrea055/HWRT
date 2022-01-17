@@ -3,7 +3,6 @@ const path=require('path')
 const huaweiLteApi = require('huawei-lte-api');
 
 
-
 try {
   if (!fs.existsSync('credentials.json')) {
     var user=prompt("Hey there! Thank you for downloading HWRT, please enter your user")
@@ -14,19 +13,18 @@ try {
       if (err) return console.log(err);
     });
   }else{
-    fs.readFile('credentials.json', 'utf8' , (err, data) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-      var credentials=JSON.parse(data)
-    })
   }
 } catch(err) {
   console.error(err)
 }
+try {
+  const data = fs.readFileSync('credentials.json', 'utf8')
+  credentials=JSON.parse(data)
+} catch (err) {
+  console.error(err)
+}
 
-const connection = new huaweiLteApi.Connection('http://' + credentials.user + "@" + credentials.pass + credentials.ip);
+const connection = new huaweiLteApi.Connection('http://' + credentials.user + ":" + credentials.pass + "@" + credentials.ip);
 
 connection.ready.then(function() {
     
