@@ -8,7 +8,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     </head>
 <body>
-  <h1 id="huno"></h1>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">HWRT</a>
@@ -76,6 +75,22 @@
       <th scope="row" >Mode:</th>
       <td colspan="2" id="mode"></td>
     </tr>
+    <tr>
+      <th scope="row" >Band:</th>
+      <td colspan="2" id="band"></td>
+    </tr>
+    <tr>
+      <th scope="row" >Bandwidth:</th>
+      <td colspan="2" id="bandwidth"></td>
+    </tr>
+    <tr>
+      <th scope="row" >Plmn(carrier in some case):</th>
+      <td colspan="2" id="plmn"></td>
+    </tr>
+    <tr>
+      <th scope="row" >eNb:</th>
+      <td colspan="2" id="enode"></td>
+    </tr>
   </tbody>
 </table>
 <script>
@@ -93,6 +108,10 @@ fs.readFile('info.json', 'utf8' , (err, data) => {
   document.getElementById("mode").innerHTML = JSON.parse(data)[4];
   document.getElementById("mac").innerHTML = JSON.parse(data)[6];
   document.getElementById("serial").innerHTML = JSON.parse(data)[5];
+  document.getElementById("band").innerHTML = JSON.parse(data)[7];
+  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[8];
+  document.getElementById("plmn").innerHTML = JSON.parse(data)[9];
+  document.getElementById("enode").innerHTML = JSON.parse(data)[10];
 })
   </script>
 </body>
