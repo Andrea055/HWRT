@@ -3,8 +3,10 @@ const fs = require('fs')
     var page = path. split("/"). pop();
 
 fs.readFile('bts.json', 'utf8' , (err, data) => {
-    if(page=="italy.html"){
+    switch(page){
+    case "italy.html":
         document.getElementById('bts').src="https://lteitaly.it/internal/map.php#bts=" + JSON.parse(data)[0] + "." + JSON.parse(data)[1]
+    break;
     }
 
   if (err) {
@@ -12,4 +14,3 @@ fs.readFile('bts.json', 'utf8' , (err, data) => {
     alert(err)
     return
 }})
-
