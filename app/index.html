@@ -36,6 +36,9 @@
                   <li><a class="dropdown-item" href="bts/france.html">France</a></li>
                   <li><a class="dropdown-item" href="bts/spain.html">Spain</a></li>
                 </ul>
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="diagnosi/diagnose.html">Diagnose</a>
+                </li>
           </div>
         </div>
       </nav>
@@ -108,16 +111,10 @@ fs.readFile('info.json', 'utf8' , (err, data) => {
   document.getElementById("mode").innerHTML = JSON.parse(data)[4];
   document.getElementById("mac").innerHTML = JSON.parse(data)[6];
   document.getElementById("serial").innerHTML = JSON.parse(data)[5];
-})
-fs.readFile('band.json', 'utf8' , (err, data) => {
-  if (err) {
-    console.error(err)
-    return
-  }
-  document.getElementById("band").innerHTML = JSON.parse(data)[0];
-  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[1];
-  document.getElementById("plmn").innerHTML = JSON.parse(data)[2];
-  document.getElementById("enode").innerHTML = JSON.parse(data)[4];
+  document.getElementById("band").innerHTML = JSON.parse(data)[7];
+  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[8];
+  document.getElementById("plmn").innerHTML = JSON.parse(data)[9];
+  document.getElementById("enode").innerHTML = JSON.parse(data)[10];
 })
   </script>
 </body>
