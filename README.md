@@ -15,6 +15,7 @@ HWRT is an application wrote with nw.js to control and check the parameters of H
 - Write SMS(not yet)
 - View the details of your BTS(only in some country)
 - Diagnose your connection with ping and traceroute
+- View device in LAN
 
 
 ## Installation
