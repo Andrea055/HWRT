@@ -45,101 +45,110 @@
           </div>
         </div>
       </nav>
-
-<div id="chart_div"></div>
-<div id="new"></div>
-<div id="rsrq"></div>
-<div id="data"></div>
-<div id="downloadgraph"></div>
 <table class="table">
   <tbody>
     <tr>
-      <th scope="row" >Device name:</th>
-      <td id="device"></td>
+      <th scope="row" >DHCP start IP:</th>
+      <td id="start"></td>
     </tr>
     <tr>
-      <th scope="row">Serial number:</th>
-      <td id="serial"></td>
+      <th scope="row">DHCP last IP:</th>
+      <td id="end"></td>
     </tr>
     <tr>
-      <th scope="row" >Imei:</th>
-      <td colspan="2" id="imei"></td>
+      <th scope="row" >Router domain:</th>
+      <td colspan="2" id="domain"></td>
     </tr>
     <tr>
-      <th scope="row" >Mac:</th>
-      <td colspan="2" id="mac"></td>
+      <th scope="row" >Netmask:</th>
+      <td colspan="2" id="mask"></td>
     </tr>
     <tr>
-      <th scope="row" >Ip:</th>
-      <td colspan="2" id="ip"></td>
-    </tr>
-    <tr>
-      <th scope="row" >DNS:</th>
-      <td colspan="2" id="dns"></td>
-    </tr>
-    <tr>
-      <th scope="row" >Mode:</th>
-      <td colspan="2" id="mode"></td>
-    </tr>
-    <tr>
-      <th scope="row" >Band:</th>
-      <td colspan="2" id="band"></td>
-    </tr>
-    <tr>
-      <th scope="row" >Bandwidth:</th>
-      <td colspan="2" id="bandwidth"></td>
-    </tr>
-    <tr>
-      <th scope="row" >Plmn(carrier in some case):</th>
-      <td colspan="2" id="plmn"></td>
-    </tr>
-    <tr>
-      <th scope="row" >eNb:</th>
-      <td colspan="2" id="enode"></td>
+      <th scope="row" >Lease:</th>
+      <td colspan="2" id="lease"></td>
     </tr>
   </tbody>
 </table>
-<button type="button" class="btn btn-primary" onclick="refres()">Refresh</button>
+
+<h6>&nbsp;</h6>
+<table class="table">
+    <tbody>
+      <tr>
+        Hostname:
+      </tr>
+      <tr>
+        IP address:
+      </tr>
+      <tr>
+        MAC address:
+
+      </tr>
+      <tr>
+        Interface:
+      </tr>
+    </tbody>
+  </table>
+<table id="myTable" class="table">
+    <tr>
+    </tr>
+  </table>
 <script>
-const fs = require('fs')
-const path=require('path')
-fs.readFile('info.json', 'utf8' , (err, data) => {
-  if (err) {
-    console.error(err)
-    return
-  }
-  document.getElementById("device").innerHTML = JSON.parse(data)[0];
-  document.getElementById("imei").innerHTML = JSON.parse(data)[1];
-  document.getElementById("ip").innerHTML = JSON.parse(data)[2];
-  document.getElementById("dns").innerHTML = JSON.parse(data)[3];
-  document.getElementById("mode").innerHTML = JSON.parse(data)[4];
-  document.getElementById("mac").innerHTML = JSON.parse(data)[6];
-  document.getElementById("serial").innerHTML = JSON.parse(data)[5];
-  document.getElementById("band").innerHTML = JSON.parse(data)[7];
-  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[8];
-  document.getElementById("plmn").innerHTML = JSON.parse(data)[9];
-  document.getElementById("enode").innerHTML = JSON.parse(data)[10];
-})
-function refres(){
-  alert("Stats refreshed")
-  fs.readFile('info.json', 'utf8' , (err, data) => {
-  if (err) {
-    console.error(err)
-    return
-  }
-  document.getElementById("device").innerHTML = JSON.parse(data)[0];
-  document.getElementById("imei").innerHTML = JSON.parse(data)[1];
-  document.getElementById("ip").innerHTML = JSON.parse(data)[2];
-  document.getElementById("dns").innerHTML = JSON.parse(data)[3];
-  document.getElementById("mode").innerHTML = JSON.parse(data)[4];
-  document.getElementById("mac").innerHTML = JSON.parse(data)[6];
-  document.getElementById("serial").innerHTML = JSON.parse(data)[5];
-  document.getElementById("band").innerHTML = JSON.parse(data)[7];
-  document.getElementById("bandwidth").innerHTML = JSON.parse(data)[8];
-  document.getElementById("plmn").innerHTML = JSON.parse(data)[9];
-  document.getElementById("enode").innerHTML = JSON.parse(data)[10];
-})
+    var fs=require('fs');
+    var huaweiLteApi = require('huawei-lte-api');
+try {
+  const data = fs.readFileSync('credentials.json', 'utf8')
+  credentials=JSON.parse(data)
+} catch (err) {
+  console.error(err)
 }
-  </script>
+
+const connection = new huaweiLteApi.Connection('http://' + credentials.user + ":" + credentials.pass + "@" + credentials.ip);
+var n=0
+
+    connection.ready.then(function() {
+    console.log('Ready');
+
+    const device = new huaweiLteApi.Dhcp(connection);
+
+
+    device.dhcpHostInfo().then(function(result) {
+        document.getElementById("start").innerHTML = result.DhcpStartIPAddress;
+        document.getElementById("end").innerHTML = result.DhcpEndIPAddress;
+        document.getElementById("domain").innerHTML = result.homeurl;
+        document.getElementById("mask").innerHTML = result.DhcpLanNetmask;
+        document.getElementById("lease").innerHTML = result.DhcpLeaseTime;
+    }).catch(function(error) {
+        console.log(error);
+    });
+});
+
+function dispositivi() {
+    connection.ready.then(function() {
+    console.log('Ready');
+
+    const device = new huaweiLteApi.Lan(connection);
+
+
+    device.hostInfo().then(function(result) {
+        for(i=0;i<result.Hosts.Host.length;i++){
+            var table = document.getElementById("myTable");
+            var row = table.insertRow(0);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(4);
+            cell1.innerHTML = result.HostName;
+            cell2.innerHTML = result.IpAddress;
+            cell3.innerHTML = result.MacAddress;
+            cell4.innerHTML = result.InterfaceType;
+        }
+
+    }).catch(function(error) {
+        console.log(error);
+    });
+});
+
+}
+</script>
 </body>
 <html> 
