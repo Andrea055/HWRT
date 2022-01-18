@@ -71,27 +71,22 @@
 </table>
 
 <h6>&nbsp;</h6>
-<table class="table">
-    <tbody>
-      <tr>
-        Hostname:
-      </tr>
-      <tr>
-        IP address:
-      </tr>
-      <tr>
-        MAC address:
-
-      </tr>
-      <tr>
-        Interface:
-      </tr>
-    </tbody>
-  </table>
+<div class="spinner-border" role="status" id="spinner">
+  <span class="visually-hidden">Loading...</span>
+</div>
 <table id="myTable" class="table">
     <tr>
     </tr>
+    <thead>
+      <tr>
+        <th scope="col">Hostname</th>
+        <th scope="col">IP address</th>
+        <th scope="col">MAC address</th>
+        <th scope="col">Interface</th>
+      </tr>
+    </thead>
   </table>
+  
 <script>
     var fs=require('fs');
     var huaweiLteApi = require('huawei-lte-api');
@@ -103,15 +98,13 @@ try {
 }
 
 const connection = new huaweiLteApi.Connection('http://' + credentials.user + ":" + credentials.pass + "@" + credentials.ip);
-var n=0
-
     connection.ready.then(function() {
     console.log('Ready');
 
     const device = new huaweiLteApi.Dhcp(connection);
 
 
-    device.dhcpHostInfo().then(function(result) {
+    device.settings().then(function(result) {
         document.getElementById("start").innerHTML = result.DhcpStartIPAddress;
         document.getElementById("end").innerHTML = result.DhcpEndIPAddress;
         document.getElementById("domain").innerHTML = result.homeurl;
@@ -130,17 +123,19 @@ function dispositivi() {
 
 
     device.hostInfo().then(function(result) {
+      console.log(result)
         for(i=0;i<result.Hosts.Host.length;i++){
             var table = document.getElementById("myTable");
             var row = table.insertRow(0);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(4);
-            cell1.innerHTML = result.HostName;
-            cell2.innerHTML = result.IpAddress;
-            cell3.innerHTML = result.MacAddress;
-            cell4.innerHTML = result.InterfaceType;
+            var cell4 = row.insertCell(3);
+            cell1.innerHTML = result.Hosts.Host[i].HostName;
+            cell2.innerHTML = result.Hosts.Host[i].IpAddress;
+            cell3.innerHTML = result.Hosts.Host[i].MacAddress;
+            cell4.innerHTML = result.Hosts.Host[i].InterfaceType;
+            document.getElementById("spinner").hidden=true
         }
 
     }).catch(function(error) {
@@ -149,6 +144,7 @@ function dispositivi() {
 });
 
 }
+dispositivi()
 </script>
 </body>
 <html> 
